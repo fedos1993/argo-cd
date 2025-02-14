@@ -44,15 +44,17 @@ metadata:
 data:
   prometheus.rules: |-
     groups:
-    - name: devopscube demo alert
+    - name: pod_alerts
       rules:
-      - alert: High Pod Memory
-        expr: sum(container_memory_usage_bytes) > 1
+      - alert: High CPU Usage
+        expr: sum(rate(container_cpu_usage_seconds_total[2m])) by (pod) > 0.7
         for: 1m
         labels:
-          severity: slack
+          severity: "critical"
         annotations:
-          summary: High Memory Usage
+          summary: "High CPU usage detected in pod {{ $labels.pod }}"
+          description: "Pod {{ $labels.pod }} in namespace {{ $labels.namespace }} is using high CPU for more than 1 minute."
+          details: "CPU usage: {{ $value }} for pod {{ $labels.pod }} in namespace {{ $labels.namespace }}"
   prometheus.yml: |-
     global:
       scrape_interval: 5s
