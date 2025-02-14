@@ -49,7 +49,7 @@ spec:
       volumes:
         - name: config-volume
           secret:
-            name: alertmanager-config
+            secretName: alertmanager-config
 ---
 apiVersion: v1
 kind: Service
